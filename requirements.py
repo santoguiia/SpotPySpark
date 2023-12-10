@@ -3,26 +3,34 @@ import subprocess
 
 def check_and_install_requirements():
     required_libraries = [
-        'excel',
-        'pyspark'
+        ('pyspark', '3.5.0'),
+        ('py4j', '>=0.10.9.7'),
+        ('pandas', '>=1.0.5'),
+        ('pyarrow', '>=4.0.0'),
+        ('numpy', '>=1.15'),
+        ('grpcio', '>=1.48, <1.57'),
+        ('grpcio-status', '>=1.48, <1.57'),
+        ('googleapis-common-protos', '==1.56.4'),
+        ('hvplot', '>==0.9.0'),
+        ('panel', '>=0.12.6'),
     ]
 
     missing_libraries = []
 
-    for library in required_libraries:
+    for library, version in required_libraries:
         try:
             importlib.import_module(library)
         except ImportError:
-            missing_libraries.append(library)
+            missing_libraries.append((library, version))
 
     if missing_libraries:
-        print("Bibliotecas ausentes: ", missing_libraries)
-        print("Instalando bibliotecas ausentes via pip...")
-        for library in missing_libraries:
-            subprocess.run(['pip', 'install', library])
+        print("Missing libraries: ", missing_libraries)
+        print("Installing missing libraries via pip...")
+        for library, version in missing_libraries:
+            subprocess.run(['pip', 'install', f'{library}{version}'])
 
-        print("Bibliotecas instaladas com sucesso.")
+        print("Libraries installed successfully.")
     else:
-        print("Todas as bibliotecas necessárias estão instaladas.")
+        print("All required libraries are already installed.")
 
 check_and_install_requirements()
